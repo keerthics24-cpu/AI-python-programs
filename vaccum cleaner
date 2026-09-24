@@ -1,0 +1,9 @@
+room = input("Enter room status (dirty/clean): ")
+
+if room == "dirty":
+    print("Room is dirty")
+    print("Vacuum cleaner is cleaning...")
+    print("Room is clean")
+else:
+    print("Room is already clean")
+    print("Vacuum cleaner moves to next room")
