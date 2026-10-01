@@ -1,0 +1,112 @@
+GOAL = (1, 2, 3,
+        4, 5, 6,
+        7, 8, 0)
+
+
+def get_neighbors(state):
+    neighbors = []
+
+    zero = state.index(0)
+    row = zero // 3
+    col = zero % 3
+
+    moves = [
+        (-1, 0, "Up"),
+        (1, 0, "Down"),
+        (0, -1, "Left"),
+        (0, 1, "Right")
+    ]
+
+    for dr, dc, move in moves:
+        new_row = row + dr
+        new_col = col + dc
+
+        if 0 <= new_row < 3 and 0 <= new_col < 3:
+            new_zero = new_row * 3 + new_col
+
+            new_state = list(state)
+            new_state[zero], new_state[new_zero] = \
+                new_state[new_zero], new_state[zero]
+
+            neighbors.append((tuple(new_state), move))
+
+    return neighbors
+
+
+def depth_limited_search(state, limit, path, visited):
+
+    if state == GOAL:
+        return path
+
+    if limit == 0:
+        return None
+
+    visited.add(state)
+
+    for next_state, move in get_neighbors(state):
+
+        if next_state not in visited:
+
+            result = depth_limited_search(
+                next_state,
+                limit - 1,
+                path + [move],
+                visited
+            )
+
+            if result is not None:
+                return result
+
+    visited.remove(state)
+
+    return None
+
+
+def IDDFS(start):
+
+    for depth in range(50):
+
+        print("Depth:", depth)
+
+        visited = set()
+
+        result = depth_limited_search(
+            start,
+            depth,
+            [],
+            visited
+        )
+
+        if result is not None:
+            return result
+
+    return None
+
+
+# -------------------------
+# USER INPUT
+# -------------------------
+
+print("Enter the 8-puzzle values")
+print("Use 0 for blank space")
+
+values = list(map(int, input("Enter 9 numbers: ").split()))
+
+start = tuple(values)
+
+if len(start) != 9 or set(start) != set(range(9)):
+    print("Invalid input!")
+else:
+
+    print("\nInitial State:")
+    for i in range(0, 9, 3):
+        print(start[i:i+3])
+
+    solution = IDDFS(start)
+
+    if solution is not None:
+        print("\nSolution found!")
+        print("Moves:", solution)
+        print("Number of moves:", len(solution))
+    else:
+        print("\nNo solution found.")
