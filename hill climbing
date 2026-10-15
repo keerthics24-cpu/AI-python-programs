@@ -1,0 +1,64 @@
+import random
+
+N = 4
+
+
+def check_stuff(x):
+    total = 0
+
+    for i in range(N):
+        for j in range(i + 1, N):
+            if x[i] == x[j] or abs(x[i] - x[j]) == abs(i - j):
+                total += 1
+
+    return total
+
+
+def doTheAlgorithm():
+    while True:
+        lst = [random.randint(0, N - 1) for _ in range(N)]
+
+        while True:
+            h_val = check_stuff(lst)
+
+            if h_val == 0:
+                return lst
+
+            temp_state = lst[:]
+            temp_h = h_val
+
+            for c in range(N):
+                for r in range(N):
+                    if lst[c] != r:
+                        neighbor = lst[:]
+                        neighbor[c] = r
+
+                        nh = check_stuff(neighbor)
+
+                        if nh < temp_h:
+                            temp_h = nh
+                            temp_state = neighbor
+
+            if temp_h >= h_val:
+                break
+            else:
+                lst = temp_state
+
+
+def show(arr):
+    for r in range(N):
+        for c in range(N):
+            if arr[c] == r:
+                print("Q", end=" ")
+            else:
+                print(".", end=" ")
+        print()
+
+
+ans = doTheAlgorithm()
+
+print("Solution:")
+show(ans)
+
+print("Heuristic value:")
+print(check_stuff(ans))
